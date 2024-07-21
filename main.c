@@ -9,7 +9,7 @@ macOS 10.15.5, 64-bit, XCode C Compiler
 #define poly 0x7 // Polynomial is x8+x2+x1+1,
 // which is 0000 0000 0000 0001 0000 0111
 
-#define PRINT_DEBUG_OPT 1
+#define PRINT_DEBUG_OPT 0
 
 // Storage to hold input data in Hexadecimal
 unsigned char input_val[5] = {0x00, 0x00, 0x00, 0x00, 0x00}; // input value is an unsigned 32-bit integer
@@ -20,12 +20,11 @@ int is_crc_made = 0;
 // IMPLEMENTATION WITHOUT CRC TABLE
 unsigned char cal_crc(const unsigned char *input_data, const int dat_len) {
     unsigned char crc8_val = 0x00; //Initial CRC8 Value is 0x00
-    int i, j;
 
-    for (i = 0; i < dat_len + 1; i++) {
+    for (int i = 0; i < dat_len + 1; i++) {
         crc8_val ^= input_data[i];
 
-        for (j = 0; j < 8; j++) {
+        for (int j = 0; j < 8; j++) {
             // Calc XOR Only when MSB is bit 1, otherwize, just SHIFT it
             crc8_val = (crc8_val & 0x80) != 0 ? (unsigned char) ((crc8_val << 1) ^ poly) : crc8_val << 1;
         }
@@ -45,7 +44,9 @@ void get_val(void) {
         exit(1);
     }
 
-    if (PRINT_DEBUG_OPT) printf("input_val = %x \n", val);
+    if (PRINT_DEBUG_OPT) {
+        printf("input_val = %x \n", val);
+    }
 
     // DO NOT TOUCH LAST CHAR POINT VAL FOR CRC
     // ex)... in Case of input value is 0xAABBCCDD
@@ -82,7 +83,9 @@ void flip_message(void) {
         for (int i = start_val; i < start_val + flip_num; i++) {
             j = i / 8;
             k = i % 8;
-            if (PRINT_DEBUG_OPT) printf("%d, %d\n", j, k);
+            if (PRINT_DEBUG_OPT) {
+                printf("%d, %d\n", j, k);
+            }
             input_val[j] ^= 1 << k; // Toggle bit!
         }
     } else if (order >= 0 && order < 40) {
@@ -90,15 +93,18 @@ void flip_message(void) {
             printf("PLEASE TYPE A FLIP INDEX YOU WANT\n");
             scanf("%d", &flip_val);
 
-            if (PRINT_DEBUG_OPT) printf("flip val : %d\n", flip_val);
+            if (PRINT_DEBUG_OPT) {
+                printf("flip val : %d\n", flip_val);
+            }
             j = flip_val / 8;
             k = flip_val % 8;
-            if (PRINT_DEBUG_OPT) printf("%d, %d\n", j, k);
+            if (PRINT_DEBUG_OPT) {
+                printf("%d, %d\n", j, k);
+            }
             input_val[j] ^= 1 << k; // Toggle bit!
         }
     } else {
         printf("End Flip Process without flipped bit(s)\n");
-        return;
     } // End Flip Process without flipping bit
 }
 
@@ -170,4 +176,3 @@ int main(void) {
 
     return 0;
 }
-
