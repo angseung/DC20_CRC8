@@ -307,3 +307,4 @@ DerivedData/
 .vscode
 Release/
 Debug/
+cmake-build-debug/
